@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BARAMEEL RUN</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:#062c36;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+body{display:flex;align-items:center;justify-content:center}
+#app{position:relative;width:min(100vw,56.25vh);height:min(177.7778vw,100vh);overflow:hidden;background:#062c36}
+.screen{position:absolute;inset:0;display:none;opacity:0;transform:scale(1.02);transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.screen.active{display:block;opacity:1;transform:scale(1)}
+.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hot{position:absolute;border:0;background:transparent;cursor:pointer}
+.tap{animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 0 rgba(255,177,25,0))}50%{filter:drop-shadow(0 0 12px rgba(255,177,25,.75))}}
+#cameraUI{position:absolute;inset:0;background:#071f27;color:#fff5d8}
+.cam-top{position:absolute;top:4%;left:7%;right:7%;display:flex;justify-content:space-between;font-size:clamp(22px,5vw,34px);font-weight:900}
+.cam-title{position:absolute;top:10%;left:8%;right:8%;text-align:center;font-weight:900;line-height:.95;font-size:clamp(34px,8.5vw,58px)}
+.cam-sub{position:absolute;top:22%;left:8%;right:8%;text-align:center;font-size:clamp(14px,3.8vw,24px);font-weight:700}
+.viewfinder{position:absolute;left:9%;right:9%;top:30%;height:39%;border:5px solid #f5eee0;border-radius:28px;box-shadow:0 0 0 999px rgba(0,0,0,.25),0 0 22px rgba(255,177,25,.45)}
+.viewfinder:before,.viewfinder:after{content:"";position:absolute;inset:0;border:7px solid transparent;border-top-color:#ef3326;border-left-color:#ef3326;border-radius:22px}
+.viewfinder:after{border-top-color:transparent;border-left-color:transparent;border-right-color:#ef3326;border-bottom-color:#ef3326}
+.qr{position:absolute;width:52%;aspect-ratio:1;left:24%;top:24%;background:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0 0/18px 18px;border:16px solid #f5eee0}
+.scanme{position:absolute;left:0;right:0;bottom:8%;text-align:center;color:#111;font-size:clamp(24px,6vw,42px);font-weight:1000;font-style:italic}
+.cam-bottom{position:absolute;bottom:5%;left:0;right:0;text-align:center;font-size:clamp(16px,4vw,26px);font-weight:800}
+</style>
+</head>
+<body>
+<div id="app">
+
+<section id="s1" class="screen active">
+  <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,#e85a24 0 14%,transparent 15%),linear-gradient(145deg,#06343d,#0a2028 70%)"></div>
+  <div style="position:absolute;inset:0;padding:8% 7%;color:#fff5d8;text-align:center">
+    <div style="font-size:clamp(42px,12vw,80px);font-weight:1000;letter-spacing:-.06em;margin-top:5%">BARAMEEL<br><span style="color:#ffb119">RUN</span></div>
+    <div style="margin-top:8%;font-size:clamp(17px,4vw,28px);font-weight:900;letter-spacing:.12em">EXPLORE • EARN • ENJOY</div>
+    <button class="hot" style="left:8%;right:8%;bottom:21%;height:14%;border:5px solid #111;border-radius:35px;background:#ffb119;color:#111;font-size:clamp(28px,7vw,46px);font-weight:1000;box-shadow:0 7px 0 #c94a20" onclick="go(2)">START YOUR RUN →</button>
+    <div style="position:absolute;left:8%;right:8%;bottom:10%;font-size:clamp(14px,3.5vw,22px);font-weight:800">GOOD FOOD • GOOD MOOD</div>
+  </div>
+</section>
+
+<section id="s2" class="screen">
+  <img class="art" id="img2" src="assets/screen02-brona.png" alt="">
+  <button class="hot" style="left:0;top:0;width:22%;height:11%" onclick="go(1)"></button>
+  <div id="cards2" style="position:absolute;left:1.5%;right:1.5%;top:23%;height:20%;display:grid;grid-template-columns:repeat(6,1fr);gap:1%;z-index:5"></div>
+</section>
+
+<section id="s3" class="screen">
+  <img class="art" id="img3" src="assets/screen03-brona.png" alt="">
+  <button class="hot" style="left:0;top:0;width:22%;height:11%" onclick="go(2)"></button>
+  <button class="hot" style="right:3%;bottom:12%;width:52%;height:15%" onclick="go(4)"></button>
+</section>
+
+<section id="s4" class="screen">
+  <img class="art" id="img4" src="assets/screen04-brona.png" alt="">
+  <button class="hot" style="left:0;top:0;width:22%;height:11%" onclick="go(3)"></button>
+  <button class="hot tap" style="right:2%;top:58%;width:55%;height:18%" onclick="go(5)"></button>
+</section>
+
+<section id="s5" class="screen">
+  <div id="cameraUI">
+    <div class="cam-top"><span onclick="go(4)" style="cursor:pointer">✕</span><span>⚡</span></div>
+    <div class="cam-title">SCAN<br>THE CHECKPOINT</div>
+    <div class="cam-sub">Point your camera at the QR code</div>
+    <div class="viewfinder"><div class="qr"></div><div class="scanme">SCAN ME</div></div>
+    <div class="cam-bottom">Scanning…</div>
+  </div>
+</section>
+
+</div>
+<script>
+const runners=['rookie','skater','brona','racer','chiller','dreamer'];
+let selected='brona';
+const path=(n,id)=>`assets/screen0${n}-${id}.png`;
+
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  if(n===2) buildCards();
+  if(n===3) document.getElementById('img3').src=path(3,selected);
+  if(n===4) document.getElementById('img4').src=path(4,selected);
+  if(n===5) document.getElementById('cameraUI').classList.add('active');
+}
+function buildCards(){
+  const wrap=document.getElementById('cards2');
+  wrap.innerHTML='';
+  runners.forEach(id=>{
+    const b=document.createElement('button');
+    b.style.cssText='border:0;background:transparent;padding:0;cursor:pointer;border-radius:14px;overflow:hidden';
+    b.innerHTML=`<img src="${path(2,id)}" style="width:100%;height:100%;object-fit:cover;display:block" alt="${id}">`;
+    b.onclick=()=>{selected=id;document.getElementById('img3').src=path(3,id);document.getElementById('img4').src=path(4,id);b.style.filter='drop-shadow(0 0 10px #ffb119)';go(3)};
+    wrap.appendChild(b);
+  });
+}
+runners.forEach(id=>[2,3,4].forEach(n=>{const i=new Image();i.src=path(n,id)}));
+</script>
+</body>
+</html>
